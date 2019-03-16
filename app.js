@@ -25,9 +25,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-	User.findAll().then((users) => {
-		res.send(users);
-	});
+	// User.findAll().then((users) => {
+	// 	res.send(users);
+    // });
+    User.findAll({
+        include: [{model: Role}]
+    }).then((users) => {
+        res.send(users)
+    })
 });
 
 app.post('/users', (req, res) => {
@@ -51,10 +56,23 @@ app.post('/users', (req, res) => {
 });
 
 app.get('/roles', (req, res) => {
-	Role.findAll().then((roles) => {
-		res.send(roles);
-	});
+	// Role.findAll().then((roles) => {
+	// 	res.send(roles);
+    // });
+    
+    Role.findAll({
+        include: [{ model: User }]
+    }).then((roles) => {
+        res.send(roles)
+    })
 });
+
+// Project.findAll({
+//     include: [{
+//         model: Task,
+//         where: { state: Sequelize.col('project.state') }
+//     }]
+// })
 
 app.post('/roles', (req, res) => {
 	var name = req.body.name;
