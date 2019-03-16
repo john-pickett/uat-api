@@ -11,12 +11,14 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
-sequelize.sync({force: true}).then(() => {
+sequelize.sync({force: false}).then(() => {
 	app.listen(port, () => {
 		console.log(`Server running on port ${port}.`)
 	});
 });
 
+Role.hasMany(User);
+User.belongsTo(Role);
 
 app.get('/', (req, res) => {
 	res.send('greetings and salutations from the uat app')
@@ -29,16 +31,16 @@ app.get('/users', (req, res) => {
 });
 
 app.post('/users', (req, res) => {
-	var firstName = req.body.firstName;
-	var lastName = req.body.lastName;
+	var first_name = req.body.first_name;
+	var last_name = req.body.last_name;
 	var email = req.body.email;
-	var role = req.body.role;
+	var role_id = req.body.role_id;
 
 	const newUser = User.build({
-		firstName: firstName,
-		lastName: lastName,
+		first_name: first_name,
+		last_name: last_name,
 		email: email,
-		role: role
+		role_id: role_id
 	});
 
 	newUser.save().then((record) => {
@@ -49,8 +51,8 @@ app.post('/users', (req, res) => {
 });
 
 app.get('/roles', (req, res) => {
-	User.findAll().then((users) => {
-		res.send(users);
+	Role.findAll().then((roles) => {
+		res.send(roles);
 	});
 });
 

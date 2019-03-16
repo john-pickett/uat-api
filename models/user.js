@@ -2,21 +2,28 @@ const Role = require('./role');
 
 const user = (sequelize, DataTypes) => {
 	const User = sequelize.define('user', {
-		firstName: {
+        id: {
+            type: DataTypes.UUID,
+            primaryKey: true,
+            defaultValue: DataTypes.UUIDV4,
+            allowNull: false
+        },
+        role_id: {
+            type: DataTypes.UUID,
+            allowNull: false
+        },
+		first_name: {
 			type: DataTypes.STRING
 		},
-		lastName: {
+		last_name: {
 			type: DataTypes.STRING
 		},
 		email: {
 			type: DataTypes.STRING
-		},
-		roleID: {
-			type: DataTypes.INTEGER,
-			references: 'roles',
-			referencesKey: 'id'
-		}
-	})
+        }
+	}, {
+        underscored: true
+    })
 
 	return User;
 }
