@@ -14,14 +14,14 @@ const seedData = require('./db/seedDB')
 
 app.use(bodyParser.json());
 
-const eraseDatabaseOnSync = false;
+const eraseDatabaseOnSync = true;
 
 sequelize.sync({force: eraseDatabaseOnSync}).then(() => {
     if (eraseDatabaseOnSync) {
         // seed DB with data
         seedData.createDataInDB()
     }
-	app.listen(port, () => {
+	app.listen(process.env.PORT || port, () => {
 		console.log(`Server running on port ${port}.`)
 	});
 });
