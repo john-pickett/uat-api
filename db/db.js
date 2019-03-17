@@ -7,7 +7,9 @@ const sequelize = new Sequelize(process.env.DB_DB_NAME, process.env.DB_USER, pro
 
 const models = {
 	User: sequelize.import('../models/user'),
-	Role: sequelize.import('../models/role')
+    Role: sequelize.import('../models/role'),
+    Grade: sequelize.import('../models/grade'),
+    Feature: sequelize.import('../models/feature')
 }
 
 

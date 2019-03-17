@@ -6,19 +6,38 @@ const db = require('./db/db');
 const sequelize = db.sequelize;
 const User = db.models.User;
 const Role = db.models.Role;
+const Grade = db.models.Grade;
+const Feature = db.models.Feature;
 const app = express();
 const port = 3000;
+const seedData = require('./db/seedDB')
 
 app.use(bodyParser.json());
 
-sequelize.sync({force: false}).then(() => {
+const eraseDatabaseOnSync = false;
+
+sequelize.sync({force: eraseDatabaseOnSync}).then(() => {
+    if (eraseDatabaseOnSync) {
+        // seed DB with data
+        seedData.createDataInDB()
+    }
 	app.listen(port, () => {
 		console.log(`Server running on port ${port}.`)
 	});
 });
 
+// setting up model relationships
+// Roles
 Role.hasMany(User);
 User.belongsTo(Role);
+// Grades
+User.hasMany(Grade);
+Grade.belongsTo(User);
+//Features
+Role.hasMany(Feature);
+Feature.belongsTo(Role);
+Feature.hasMany(Grade);
+Grade.belongsTo(Feature);
 
 app.get('/', (req, res) => {
 	res.send('greetings and salutations from the uat app')
@@ -67,13 +86,6 @@ app.get('/roles', (req, res) => {
     })
 });
 
-// Project.findAll({
-//     include: [{
-//         model: Task,
-//         where: { state: Sequelize.col('project.state') }
-//     }]
-// })
-
 app.post('/roles', (req, res) => {
 	var name = req.body.name;
 
@@ -87,3 +99,19 @@ app.post('/roles', (req, res) => {
 		res.send('Error saving role: ' + err);
 	});
 });
+
+app.get('/grades', (req, res) => {
+    Grade.findAll({
+        include: [{ model: User }, { model: Feature }]
+    }).then((grades) => {
+        res.send(grades)
+    })
+});
+
+app.get('/features', (req, res) => {
+    Feature.findAll({
+        include: [{ model: Role }, { model: Grade }]
+    }).then((features) => {
+        res.send(features)
+    })
+})

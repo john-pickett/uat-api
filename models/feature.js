@@ -1,29 +1,22 @@
-const user = (sequelize, DataTypes) => {
-	const User = sequelize.define('user', {
+const feature = (sequelize, DataTypes) => {
+    const Feature = sequelize.define('feature', {
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
             defaultValue: DataTypes.UUIDV4,
             allowNull: false
         },
+        name: {
+            type: DataTypes.STRING
+        },
         role_id: {
             type: DataTypes.UUID,
             allowNull: false
-        },
-		first_name: {
-			type: DataTypes.STRING
-		},
-		last_name: {
-			type: DataTypes.STRING
-		},
-		email: {
-			type: DataTypes.STRING
         }
-	}, {
+    }, {
         underscored: true
     })
-
-	return User;
+    return Feature;
 }
 
-module.exports = user;
+module.exports = feature;
