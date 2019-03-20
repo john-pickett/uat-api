@@ -2,14 +2,16 @@ require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const db = require('./db/db');
+const db = require('./db/db.js');
 const sequelize = db.sequelize;
-const User = db.models.User;
-const Role = db.models.Role;
+const User = db.users;
+const Role = db.roles;
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
+
+Role.hasMany(User);
 
 sequelize.sync({force: true}).then(() => {
 	app.listen(port, () => {
@@ -32,13 +34,11 @@ app.post('/users', (req, res) => {
 	var firstName = req.body.firstName;
 	var lastName = req.body.lastName;
 	var email = req.body.email;
-	var role = req.body.role;
 
 	const newUser = User.build({
-		firstName: firstName,
-		lastName: lastName,
-		email: email,
-		role: role
+		first_name: firstName,
+		last_name: lastName,
+		email: email
 	});
 
 	newUser.save().then((record) => {
@@ -55,10 +55,10 @@ app.get('/roles', (req, res) => {
 });
 
 app.post('/roles', (req, res) => {
-	var name = req.body.name;
+	var name = req.body.role_name;
 
 	const newRole = Role.build({
-		name: name
+		role_name: name
 	});
 
 	newRole.save().then((record) => {
